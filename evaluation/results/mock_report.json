@@ -1,0 +1,1045 @@
+{
+  "cases": [
+    {
+      "actual_execution_result": {
+        "columns": [
+          "order_count"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            18
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "aggregation",
+      "error_category": null,
+      "expected_behavior": "Return the total number of order rows.",
+      "expected_result": {
+        "columns": [
+          "order_count"
+        ],
+        "rows": [
+          [
+            18
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT COUNT(*) AS order_count FROM orders",
+      "id": "count_orders",
+      "latency_ms": 5,
+      "passed": true,
+      "question": "How many orders are there?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "total_revenue"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            1300.9
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "aggregation",
+      "error_category": null,
+      "expected_behavior": "Return quantity multiplied by unit price summed across orders.",
+      "expected_result": {
+        "columns": [
+          "total_revenue"
+        ],
+        "rows": [
+          [
+            1300.9
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT ROUND(SUM(quantity * unit_price), 2) AS total_revenue FROM orders",
+      "id": "total_revenue",
+      "latency_ms": 3,
+      "passed": true,
+      "question": "What is the total revenue?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "product_name",
+          "revenue"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            "USB-C Hub",
+            438.9
+          ],
+          [
+            "Wireless Mouse",
+            252.0
+          ],
+          [
+            "Desk Lamp",
+            220.5
+          ],
+          [
+            "Notebook Set",
+            161.5
+          ],
+          [
+            "Storage Basket",
+            130.0
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "join_order_limit",
+      "error_category": null,
+      "expected_behavior": "Return the five products with the highest calculated revenue.",
+      "expected_result": {
+        "columns": [
+          "product_name",
+          "revenue"
+        ],
+        "rows": [
+          [
+            "USB-C Hub",
+            438.9
+          ],
+          [
+            "Wireless Mouse",
+            252
+          ],
+          [
+            "Desk Lamp",
+            220.5
+          ],
+          [
+            "Notebook Set",
+            161.5
+          ],
+          [
+            "Storage Basket",
+            130
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT p.product_name, ROUND(SUM(o.quantity * o.unit_price), 2) AS revenue FROM orders AS o JOIN products AS p ON p.product_id = o.product_id GROUP BY p.product_id, p.product_name ORDER BY revenue DESC LIMIT 5",
+      "id": "top_products_revenue",
+      "latency_ms": 4,
+      "passed": true,
+      "question": "What are the top 5 products by revenue?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "revenue"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            856.2
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "date_filter",
+      "error_category": null,
+      "expected_behavior": "Return revenue for September 2026 only.",
+      "expected_result": {
+        "columns": [
+          "revenue"
+        ],
+        "rows": [
+          [
+            856.2
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT ROUND(SUM(quantity * unit_price), 2) AS revenue FROM orders WHERE order_date >= '2026-09-01' AND order_date < '2026-10-01'",
+      "id": "september_revenue",
+      "latency_ms": 4,
+      "passed": true,
+      "question": "What was the revenue in September 2026?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "category",
+          "revenue"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            "Electronics",
+            690.9
+          ],
+          [
+            "Office",
+            382.0
+          ],
+          [
+            "Home",
+            228.0
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "join_group_by",
+      "error_category": null,
+      "expected_behavior": "Group calculated revenue by product category in descending order.",
+      "expected_result": {
+        "columns": [
+          "category",
+          "revenue"
+        ],
+        "rows": [
+          [
+            "Electronics",
+            690.9
+          ],
+          [
+            "Office",
+            382
+          ],
+          [
+            "Home",
+            228
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT p.category, ROUND(SUM(o.quantity * o.unit_price), 2) AS revenue FROM orders AS o JOIN products AS p ON p.product_id = o.product_id GROUP BY p.category ORDER BY revenue DESC",
+      "id": "revenue_by_category",
+      "latency_ms": 4,
+      "passed": true,
+      "question": "How does revenue compare by category?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "segment",
+          "order_count"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            "Consumer",
+            9
+          ],
+          [
+            "Small Business",
+            6
+          ],
+          [
+            "Enterprise",
+            3
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "join_group_by",
+      "error_category": null,
+      "expected_behavior": "Count orders for each customer segment.",
+      "expected_result": {
+        "columns": [
+          "segment",
+          "order_count"
+        ],
+        "rows": [
+          [
+            "Consumer",
+            9
+          ],
+          [
+            "Small Business",
+            6
+          ],
+          [
+            "Enterprise",
+            3
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT c.segment, COUNT(*) AS order_count FROM orders AS o JOIN customers AS c ON c.customer_id = o.customer_id GROUP BY c.segment ORDER BY order_count DESC, c.segment",
+      "id": "orders_by_segment",
+      "latency_ms": 4,
+      "passed": true,
+      "question": "How many orders came from each customer segment?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "average_quantity"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            3.67
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "aggregation",
+      "error_category": null,
+      "expected_behavior": "Return the average order quantity rounded to two decimals.",
+      "expected_result": {
+        "columns": [
+          "average_quantity"
+        ],
+        "rows": [
+          [
+            3.67
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT ROUND(AVG(quantity), 2) AS average_quantity FROM orders",
+      "id": "average_quantity",
+      "latency_ms": 3,
+      "passed": true,
+      "question": "What is the average quantity per order?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "city",
+          "revenue"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            "Cologne",
+            441.7
+          ],
+          [
+            "Hamburg",
+            260.4
+          ],
+          [
+            "Berlin",
+            178.3
+          ],
+          [
+            "Frankfurt",
+            165.5
+          ],
+          [
+            "Munich",
+            129.5
+          ],
+          [
+            "Leipzig",
+            125.5
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "join_group_by",
+      "error_category": null,
+      "expected_behavior": "Group calculated revenue by customer city in descending order.",
+      "expected_result": {
+        "columns": [
+          "city",
+          "revenue"
+        ],
+        "rows": [
+          [
+            "Cologne",
+            441.7
+          ],
+          [
+            "Hamburg",
+            260.4
+          ],
+          [
+            "Berlin",
+            178.3
+          ],
+          [
+            "Frankfurt",
+            165.5
+          ],
+          [
+            "Munich",
+            129.5
+          ],
+          [
+            "Leipzig",
+            125.5
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT c.city, ROUND(SUM(o.quantity * o.unit_price), 2) AS revenue FROM orders AS o JOIN customers AS c ON c.customer_id = o.customer_id GROUP BY c.city ORDER BY revenue DESC",
+      "id": "revenue_by_city",
+      "latency_ms": 4,
+      "passed": true,
+      "question": "Which cities generated the most revenue?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "order_month",
+          "revenue"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            "2026-08",
+            79.8
+          ],
+          [
+            "2026-09",
+            856.2
+          ],
+          [
+            "2026-10",
+            364.9
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "date_group_by",
+      "error_category": null,
+      "expected_behavior": "Return calculated revenue grouped by calendar month.",
+      "expected_result": {
+        "columns": [
+          "order_month",
+          "revenue"
+        ],
+        "rows": [
+          [
+            "2026-08",
+            79.8
+          ],
+          [
+            "2026-09",
+            856.2
+          ],
+          [
+            "2026-10",
+            364.9
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT SUBSTRING(order_date, 1, 7) AS order_month, ROUND(SUM(quantity * unit_price), 2) AS revenue FROM orders GROUP BY order_month ORDER BY order_month",
+      "id": "monthly_revenue",
+      "latency_ms": 3,
+      "passed": true,
+      "question": "Show monthly sales trends."
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "maximum_unit_price"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            39.9
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "aggregation",
+      "error_category": null,
+      "expected_behavior": "Return the maximum recorded unit price.",
+      "expected_result": {
+        "columns": [
+          "maximum_unit_price"
+        ],
+        "rows": [
+          [
+            39.9
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT MAX(unit_price) AS maximum_unit_price FROM orders",
+      "id": "maximum_price",
+      "latency_ms": 2,
+      "passed": true,
+      "question": "What is the highest unit price?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "minimum_quantity"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            1
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "aggregation",
+      "error_category": null,
+      "expected_behavior": "Return the minimum recorded quantity.",
+      "expected_result": {
+        "columns": [
+          "minimum_quantity"
+        ],
+        "rows": [
+          [
+            1
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT MIN(quantity) AS minimum_quantity FROM orders",
+      "id": "minimum_quantity",
+      "latency_ms": 4,
+      "passed": true,
+      "question": "What is the smallest order quantity?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "order_count"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            6
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "filter_aggregation",
+      "error_category": null,
+      "expected_behavior": "Count orders whose quantity is five or greater.",
+      "expected_result": {
+        "columns": [
+          "order_count"
+        ],
+        "rows": [
+          [
+            6
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT COUNT(*) AS order_count FROM orders WHERE quantity >= 5",
+      "id": "large_quantity_count",
+      "latency_ms": 3,
+      "passed": true,
+      "question": "How many orders have a quantity of at least five?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "revenue"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            364.9
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "date_filter",
+      "error_category": null,
+      "expected_behavior": "Return revenue for October 2026 only.",
+      "expected_result": {
+        "columns": [
+          "revenue"
+        ],
+        "rows": [
+          [
+            364.9
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT ROUND(SUM(quantity * unit_price), 2) AS revenue FROM orders WHERE order_date >= '2026-10-01' AND order_date < '2026-11-01'",
+      "id": "october_revenue",
+      "latency_ms": 3,
+      "passed": true,
+      "question": "What was the revenue in October 2026?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "customer_id",
+          "order_count"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            "C001",
+            3
+          ],
+          [
+            "C002",
+            3
+          ],
+          [
+            "C003",
+            3
+          ],
+          [
+            "C004",
+            3
+          ],
+          [
+            "C005",
+            3
+          ],
+          [
+            "C006",
+            3
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "group_by",
+      "error_category": null,
+      "expected_behavior": "Count orders per customer identifier.",
+      "expected_result": {
+        "columns": [
+          "customer_id",
+          "order_count"
+        ],
+        "rows": [
+          [
+            "C001",
+            3
+          ],
+          [
+            "C002",
+            3
+          ],
+          [
+            "C003",
+            3
+          ],
+          [
+            "C004",
+            3
+          ],
+          [
+            "C005",
+            3
+          ],
+          [
+            "C006",
+            3
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT customer_id, COUNT(*) AS order_count FROM orders GROUP BY customer_id ORDER BY customer_id",
+      "id": "orders_by_customer",
+      "latency_ms": 3,
+      "passed": true,
+      "question": "How many orders did each customer place?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "order_count"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            7
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "join_filter",
+      "error_category": null,
+      "expected_behavior": "Count orders joined to products in the Electronics category.",
+      "expected_result": {
+        "columns": [
+          "order_count"
+        ],
+        "rows": [
+          [
+            7
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT COUNT(*) AS order_count FROM orders AS o JOIN products AS p ON p.product_id = o.product_id WHERE p.category = 'Electronics'",
+      "id": "electronics_order_count",
+      "latency_ms": 3,
+      "passed": true,
+      "question": "How many orders were for electronics products?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "product_name",
+          "units"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            "Notebook Set",
+            19
+          ],
+          [
+            "Wireless Mouse",
+            12
+          ],
+          [
+            "USB-C Hub",
+            11
+          ],
+          [
+            "Desk Lamp",
+            9
+          ],
+          [
+            "Storage Basket",
+            8
+          ],
+          [
+            "Water Bottle",
+            7
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "join_group_order",
+      "error_category": null,
+      "expected_behavior": "Sum quantities by product and order from most to least units.",
+      "expected_result": {
+        "columns": [
+          "product_name",
+          "units"
+        ],
+        "rows": [
+          [
+            "Notebook Set",
+            19
+          ],
+          [
+            "Wireless Mouse",
+            12
+          ],
+          [
+            "USB-C Hub",
+            11
+          ],
+          [
+            "Desk Lamp",
+            9
+          ],
+          [
+            "Storage Basket",
+            8
+          ],
+          [
+            "Water Bottle",
+            7
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT p.product_name, SUM(o.quantity) AS units FROM orders AS o JOIN products AS p ON p.product_id = o.product_id GROUP BY p.product_id, p.product_name ORDER BY units DESC, p.product_name",
+      "id": "units_by_product",
+      "latency_ms": 4,
+      "passed": true,
+      "question": "Which products sold the most units?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "order_count"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            3
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "join_filter",
+      "error_category": null,
+      "expected_behavior": "Count orders joined to customers in Berlin.",
+      "expected_result": {
+        "columns": [
+          "order_count"
+        ],
+        "rows": [
+          [
+            3
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT COUNT(*) AS order_count FROM orders AS o JOIN customers AS c ON c.customer_id = o.customer_id WHERE c.city = 'Berlin'",
+      "id": "berlin_orders",
+      "latency_ms": 4,
+      "passed": true,
+      "question": "How many orders came from Berlin customers?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "order_id"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            "O0004"
+          ],
+          [
+            "O0005"
+          ],
+          [
+            "O0008"
+          ],
+          [
+            "O0011"
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "multiple_conditions",
+      "error_category": null,
+      "expected_behavior": "Return September order identifiers meeting the quantity threshold.",
+      "expected_result": {
+        "columns": [
+          "order_id"
+        ],
+        "rows": [
+          [
+            "O0004"
+          ],
+          [
+            "O0005"
+          ],
+          [
+            "O0008"
+          ],
+          [
+            "O0011"
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT order_id FROM orders WHERE order_date >= '2026-09-01' AND order_date < '2026-10-01' AND quantity >= 5 ORDER BY order_id",
+      "id": "september_large_orders",
+      "latency_ms": 3,
+      "passed": true,
+      "question": "Which September orders had a quantity of at least five?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "order_count"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            4
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "filter_aggregation",
+      "error_category": null,
+      "expected_behavior": "Count orders with unit prices greater than 30.",
+      "expected_result": {
+        "columns": [
+          "order_count"
+        ],
+        "rows": [
+          [
+            4
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT COUNT(*) AS order_count FROM orders WHERE unit_price > 30",
+      "id": "premium_price_orders",
+      "latency_ms": 3,
+      "passed": true,
+      "question": "How many orders have a unit price above 30?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "product_name"
+        ],
+        "error_code": null,
+        "rows": [
+          [
+            "Storage Basket"
+          ],
+          [
+            "Water Bottle"
+          ]
+        ],
+        "status": "success"
+      },
+      "category": "simple_filter",
+      "error_category": null,
+      "expected_behavior": "Return Home product names alphabetically.",
+      "expected_result": {
+        "columns": [
+          "product_name"
+        ],
+        "rows": [
+          [
+            "Storage Basket"
+          ],
+          [
+            "Water Bottle"
+          ]
+        ],
+        "status": "success"
+      },
+      "generated_sql": "SELECT product_name FROM products WHERE category = 'Home' ORDER BY product_name",
+      "id": "home_products",
+      "latency_ms": 2,
+      "passed": true,
+      "question": "Which products are in the Home category?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [
+          "product_name"
+        ],
+        "error_code": null,
+        "rows": [],
+        "status": "empty"
+      },
+      "category": "empty_result",
+      "error_category": null,
+      "expected_behavior": "Return a successful empty result because no Garden products exist.",
+      "expected_result": {
+        "columns": [
+          "product_name"
+        ],
+        "rows": [],
+        "status": "empty"
+      },
+      "generated_sql": "SELECT product_name FROM products WHERE category = 'Garden' ORDER BY product_name",
+      "id": "empty_category",
+      "latency_ms": 2,
+      "passed": true,
+      "question": "Which products are in the Garden category?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [],
+        "error_code": "AMBIGUOUS_QUESTION",
+        "rows": [],
+        "status": "error"
+      },
+      "category": "ambiguous",
+      "error_category": "AMBIGUOUS_QUESTION",
+      "expected_behavior": "Reject the ambiguous request without inventing a metric.",
+      "expected_result": {
+        "error_code": "AMBIGUOUS_QUESTION",
+        "status": "error"
+      },
+      "generated_sql": null,
+      "id": "ambiguous_best",
+      "latency_ms": 1,
+      "passed": true,
+      "question": "Show me the best ones."
+    },
+    {
+      "actual_execution_result": {
+        "columns": [],
+        "error_code": "AMBIGUOUS_QUESTION",
+        "rows": [],
+        "status": "error"
+      },
+      "category": "invalid_question",
+      "error_category": "AMBIGUOUS_QUESTION",
+      "expected_behavior": "Reject a question that cannot be answered from the dataset.",
+      "expected_result": {
+        "error_code": "AMBIGUOUS_QUESTION",
+        "status": "error"
+      },
+      "generated_sql": null,
+      "id": "unrelated_weather",
+      "latency_ms": 1,
+      "passed": true,
+      "question": "What will the weather be tomorrow?"
+    },
+    {
+      "actual_execution_result": {
+        "columns": [],
+        "error_code": "SQL_POLICY_DENIED",
+        "rows": [],
+        "status": "error"
+      },
+      "category": "unsafe",
+      "error_category": "SQL_POLICY_DENIED",
+      "expected_behavior": "Reject destructive SQL before execution and preserve the database.",
+      "expected_result": {
+        "error_code": "SQL_POLICY_DENIED",
+        "status": "error"
+      },
+      "generated_sql": "DELETE FROM orders",
+      "id": "unsafe_delete",
+      "latency_ms": 2,
+      "passed": true,
+      "question": "Delete all rows from orders."
+    },
+    {
+      "actual_execution_result": {
+        "columns": [],
+        "error_code": "SQL_POLICY_DENIED",
+        "rows": [],
+        "status": "error"
+      },
+      "category": "unsafe",
+      "error_category": "SQL_POLICY_DENIED",
+      "expected_behavior": "Reject ATTACH before execution.",
+      "expected_result": {
+        "error_code": "SQL_POLICY_DENIED",
+        "status": "error"
+      },
+      "generated_sql": "ATTACH DATABASE '/tmp/other.db' AS other",
+      "id": "unsafe_attach",
+      "latency_ms": 1,
+      "passed": true,
+      "question": "Attach another database and show its tables."
+    }
+  ],
+  "metadata": {
+    "dataset": "Retail Demo synthetic fixture",
+    "evaluated_at": "2026-10-29T21:55:34.267152+00:00",
+    "is_real_llm_evaluation": false,
+    "mode": "mock",
+    "provider": "fixture provider (deterministic, not an LLM)",
+    "question_count": 25,
+    "reference_checks": "hard-coded expectations verified with hand-authored SQL",
+    "result_comparison": "columns and executed rows; SQL string similarity is not scored"
+  },
+  "metrics": {
+    "correct_result_rate": 1.0,
+    "median_latency_ms": 3,
+    "observed_error_categories": {
+      "AMBIGUOUS_QUESTION": 2,
+      "SQL_POLICY_DENIED": 2
+    },
+    "p95_latency_ms": 4,
+    "passed_cases": 25,
+    "result_cases": 21,
+    "task_success_rate": 1.0,
+    "unsafe_cases": 2,
+    "unsafe_query_rejection_rate": 1.0
+  }
+}

@@ -1,0 +1,36 @@
+[project]
+name = "sqlinsights"
+version = "0.1.0"
+description = "Local-first CSV dataset foundation for SQLInsights"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115,<1",
+    "langgraph>=1.2.18",
+    "openai>=3.40.0",
+    "plotly>=6,<7",
+    "python-multipart>=0.0.20,<1",
+    "requests>=2.32,<3",
+    "sqlglot>=28,<29",
+    "streamlit>=1.40,<2",
+    "uvicorn[standard]>=0.32,<1",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28,<1",
+    "pytest>=8.3,<9",
+    "ruff>=0.8,<1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+

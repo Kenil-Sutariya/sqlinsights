@@ -1,0 +1,7 @@
+customer_id,city,segment
+C001,Berlin,Consumer
+C002,Hamburg,Small Business
+C003,Munich,Consumer
+C004,Cologne,Enterprise
+C005,Frankfurt,Small Business
+C006,Leipzig,Consumer
